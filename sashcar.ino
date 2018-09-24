@@ -1,18 +1,18 @@
 /*
- * Copyright (c) <2018> <Rafael Levy>
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to 
- * whom the Software is furnished to do so, subject to the following conditions:
+ *  Copyright (c) <2018> <Rafael Levy>
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+ *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+ *  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to 
+ *  whom the Software is furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of 
- * the Software.
+ *  The above copyright notice and this permission notice shall be included in all copies or substantial portions of 
+ *  the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
+ *  NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+ *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  *
  */
  
@@ -56,7 +56,7 @@ void setup() {
     digitalWrite(PED_RED, HIGH);
     
     //Assign the initial values
-    crossTime = millis();
+    changeTime = millis();
     value = analogRead(A0);
 }
 
@@ -76,12 +76,12 @@ void loop(){
     // if the button was pressed start the traffic light cycle
     if (state == HIGH && (millis() - changeTime) > crossTime){ 
         loopTraficLight();
-        state = LOW;
+        changeTime = millis();
     }
 }
 
+// Light change procedure
 void loopTrafficLight() {
-    
     // starts the car's traffic light cycle
     Serial.println("inicia el ciclo del semáforo del carro");
     flash(CAR_GREEN); 
@@ -95,10 +95,11 @@ void loopTrafficLight() {
     digitalWrite(PED_RED, LOW);
     digitalWrite(PED_GREEN, HIGH);
     delayIdle(crossTime); // wait for preset time period
+    state = LOW; // Clean the flag of the crossover button
     flash(PED_GREEN);
     digitalWrite(PED_RED, HIGH);
     delayIdle(1000); // wait 1 second till its safe
-    //Return to the original state of the traffic light
+    // Return to the original state of the traffic light
     digitalWrite(CAR_RED, LOW);
     digitalWrite(CAR_GREEN, HIGH);
 }
